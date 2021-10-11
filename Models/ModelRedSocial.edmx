@@ -18,8 +18,37 @@
           <EntitySet Name="Amigos" EntityType="ModelRedSocial.Amigo" />
           <EntitySet Name="Mensajes" EntityType="ModelRedSocial.Mensaje" />
           <EntitySet Name="Comentarios" EntityType="ModelRedSocial.Comentario" />
-          <EntitySet Name="Fotos" EntityType="ModelRedSocial.FotoPublicacion" />
+          <EntitySet Name="FotoPublicaciones" EntityType="ModelRedSocial.FotoPublicacion" />
           <EntitySet Name="FotoUsuarios" EntityType="ModelRedSocial.FotoUsuario" />
+          <EntitySet Name="Fotos" EntityType="ModelRedSocial.Foto" />
+          <AssociationSet Name="FotoFotoPublicacion" Association="ModelRedSocial.FotoFotoPublicacion">
+            <End Role="Foto" EntitySet="Fotos" />
+            <End Role="FotoPublicacion" EntitySet="FotoPublicaciones" />
+          </AssociationSet>
+          <AssociationSet Name="FotoFotoUsuario" Association="ModelRedSocial.FotoFotoUsuario">
+            <End Role="Foto" EntitySet="Fotos" />
+            <End Role="FotoUsuario" EntitySet="FotoUsuarios" />
+          </AssociationSet>
+          <AssociationSet Name="UsuarioFotoUsuario" Association="ModelRedSocial.UsuarioFotoUsuario">
+            <End Role="Usuario" EntitySet="Usuarios" />
+            <End Role="FotoUsuario" EntitySet="FotoUsuarios" />
+          </AssociationSet>
+          <AssociationSet Name="PublicacionFotoPublicacion" Association="ModelRedSocial.PublicacionFotoPublicacion">
+            <End Role="Publicacion" EntitySet="Publicaciones" />
+            <End Role="FotoPublicacion" EntitySet="FotoPublicaciones" />
+          </AssociationSet>
+          <AssociationSet Name="UsuarioPublicacion" Association="ModelRedSocial.UsuarioPublicacion">
+            <End Role="Usuario" EntitySet="Usuarios" />
+            <End Role="Publicacion" EntitySet="Publicaciones" />
+          </AssociationSet>
+          <AssociationSet Name="PublicacionComentario" Association="ModelRedSocial.PublicacionComentario">
+            <End Role="Publicacion" EntitySet="Publicaciones" />
+            <End Role="Comentario" EntitySet="Comentarios" />
+          </AssociationSet>
+          <AssociationSet Name="UsuarioComentario" Association="ModelRedSocial.UsuarioComentario">
+            <End Role="Usuario" EntitySet="Usuarios" />
+            <End Role="Comentario" EntitySet="Comentarios" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Usuario">
           <Key>
@@ -35,6 +64,9 @@
           <Property Name="created_at" Type="DateTime" Nullable="false" />
           <Property Name="updated_at" Type="DateTime" Nullable="false" />
           <Property Name="status" Type="String" Nullable="false" />
+          <NavigationProperty Name="FotoUsuario" Relationship="ModelRedSocial.UsuarioFotoUsuario" FromRole="Usuario" ToRole="FotoUsuario" />
+          <NavigationProperty Name="Publicacion" Relationship="ModelRedSocial.UsuarioPublicacion" FromRole="Usuario" ToRole="Publicacion" />
+          <NavigationProperty Name="Comentario" Relationship="ModelRedSocial.UsuarioComentario" FromRole="Usuario" ToRole="Comentario" />
         </EntityType>
         <EntityType Name="Publicacion">
           <Key>
@@ -44,6 +76,10 @@
           <Property Name="Descripcion" Type="String" Nullable="false" />
           <Property Name="FechaPublicacion" Type="DateTime" Nullable="false" />
           <Property Name="Imagen" Type="Binary" Nullable="false" />
+          <NavigationProperty Name="FotoPublicacion" Relationship="ModelRedSocial.PublicacionFotoPublicacion" FromRole="Publicacion" ToRole="FotoPublicacion" />
+          <NavigationProperty Name="Usuario" Relationship="ModelRedSocial.UsuarioPublicacion" FromRole="Publicacion" ToRole="Usuario" />
+          <Property Name="UsuarioId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Comentario" Relationship="ModelRedSocial.PublicacionComentario" FromRole="Publicacion" ToRole="Comentario" />
         </EntityType>
         <EntityType Name="Amigo">
           <Key>
@@ -65,7 +101,13 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Descripcion" Type="String" Nullable="false" />
-          <Property Name="FechaComentario" Type="String" Nullable="false" />
+          <Property Name="created_at" Type="String" Nullable="false" />
+          <Property Name="updated_at" Type="String" Nullable="false" />
+          <NavigationProperty Name="Publicacion" Relationship="ModelRedSocial.PublicacionComentario" FromRole="Comentario" ToRole="Publicacion" />
+          <Property Name="PublicacionId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Usuario" Relationship="ModelRedSocial.UsuarioComentario" FromRole="Comentario" ToRole="Usuario" />
+          <Property Name="UsuarioId" Type="Int32" Nullable="false" />
+          <Property Name="status" Type="String" Nullable="false" />
         </EntityType>
         <EntityType Name="FotoPublicacion">
           <Key>
@@ -73,6 +115,10 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="fotos" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="Foto" Relationship="ModelRedSocial.FotoFotoPublicacion" FromRole="FotoPublicacion" ToRole="Foto" />
+          <Property Name="FotoId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Publicacion" Relationship="ModelRedSocial.PublicacionFotoPublicacion" FromRole="FotoPublicacion" ToRole="Publicacion" />
+          <Property Name="PublicacionId" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="FotoUsuario">
           <Key>
@@ -80,7 +126,106 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="fotos" Type="String" Nullable="false" />
+          <NavigationProperty Name="Foto" Relationship="ModelRedSocial.FotoFotoUsuario" FromRole="FotoUsuario" ToRole="Foto" />
+          <Property Name="FotoId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Usuario" Relationship="ModelRedSocial.UsuarioFotoUsuario" FromRole="FotoUsuario" ToRole="Usuario" />
+          <Property Name="UsuarioId" Type="Int32" Nullable="false" />
         </EntityType>
+        <EntityType Name="Foto">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="foto" Type="String" Nullable="false" />
+          <Property Name="created_at" Type="String" Nullable="false" />
+          <Property Name="updated_at" Type="String" Nullable="false" />
+          <NavigationProperty Name="FotoPublicacion" Relationship="ModelRedSocial.FotoFotoPublicacion" FromRole="Foto" ToRole="FotoPublicacion" />
+          <NavigationProperty Name="FotoUsuario" Relationship="ModelRedSocial.FotoFotoUsuario" FromRole="Foto" ToRole="FotoUsuario" />
+        </EntityType>
+        <Association Name="FotoFotoPublicacion">
+          <End Type="ModelRedSocial.Foto" Role="Foto" Multiplicity="1" />
+          <End Type="ModelRedSocial.FotoPublicacion" Role="FotoPublicacion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Foto">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FotoPublicacion">
+              <PropertyRef Name="FotoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FotoFotoUsuario">
+          <End Type="ModelRedSocial.Foto" Role="Foto" Multiplicity="1" />
+          <End Type="ModelRedSocial.FotoUsuario" Role="FotoUsuario" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Foto">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FotoUsuario">
+              <PropertyRef Name="FotoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="UsuarioFotoUsuario">
+          <End Type="ModelRedSocial.Usuario" Role="Usuario" Multiplicity="1" />
+          <End Type="ModelRedSocial.FotoUsuario" Role="FotoUsuario" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuario">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FotoUsuario">
+              <PropertyRef Name="UsuarioId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="PublicacionFotoPublicacion">
+          <End Type="ModelRedSocial.Publicacion" Role="Publicacion" Multiplicity="1" />
+          <End Type="ModelRedSocial.FotoPublicacion" Role="FotoPublicacion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Publicacion">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FotoPublicacion">
+              <PropertyRef Name="PublicacionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="UsuarioPublicacion">
+          <End Type="ModelRedSocial.Usuario" Role="Usuario" Multiplicity="1" />
+          <End Type="ModelRedSocial.Publicacion" Role="Publicacion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuario">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Publicacion">
+              <PropertyRef Name="UsuarioId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="PublicacionComentario">
+          <End Type="ModelRedSocial.Publicacion" Role="Publicacion" Multiplicity="1" />
+          <End Type="ModelRedSocial.Comentario" Role="Comentario" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Publicacion">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Comentario">
+              <PropertyRef Name="PublicacionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="UsuarioComentario">
+          <End Type="ModelRedSocial.Usuario" Role="Usuario" Multiplicity="1" />
+          <End Type="ModelRedSocial.Comentario" Role="Comentario" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuario">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Comentario">
+              <PropertyRef Name="UsuarioId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->

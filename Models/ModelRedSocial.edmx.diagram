@@ -5,13 +5,21 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="a9679b7e25384231bdab43aee6919102" Name="Diagram1" ZoomLevel="74" >
-        <EntityTypeShape EntityType="ModelRedSocial.Usuario" Width="1.5" PointX="5" PointY="0.5" />
-        <EntityTypeShape EntityType="ModelRedSocial.Publicacion" Width="1.5" PointX="7.125" PointY="0.625" />
-        <EntityTypeShape EntityType="ModelRedSocial.Amigo" Width="1.5" PointX="3.625" PointY="4.75" />
-        <EntityTypeShape EntityType="ModelRedSocial.Mensaje" Width="1.5" PointX="1.25" PointY="1.25" />
-        <EntityTypeShape EntityType="ModelRedSocial.Comentario" Width="1.5" PointX="6.75" PointY="4.125" />
-        <EntityTypeShape EntityType="ModelRedSocial.FotoPublicacion" Width="1.5" PointX="9.375" PointY="0.625" />
-        <EntityTypeShape EntityType="ModelRedSocial.FotoUsuario" Width="1.5" PointX="3.125" PointY="0.5" />
+        <EntityTypeShape EntityType="ModelRedSocial.Usuario" Width="1.5" PointX="4.875" PointY="3.25" />
+        <EntityTypeShape EntityType="ModelRedSocial.Publicacion" Width="1.5" PointX="7.5" PointY="3" />
+        <EntityTypeShape EntityType="ModelRedSocial.Amigo" Width="1.5" PointX="1.75" PointY="4.75" />
+        <EntityTypeShape EntityType="ModelRedSocial.Mensaje" Width="1.5" PointX="0.625" PointY="1" />
+        <EntityTypeShape EntityType="ModelRedSocial.Comentario" Width="1.5" PointX="7.5" PointY="6" />
+        <EntityTypeShape EntityType="ModelRedSocial.FotoPublicacion" Width="1.5" PointX="7.5" PointY="0.5" />
+        <EntityTypeShape EntityType="ModelRedSocial.FotoUsuario" Width="1.5" PointX="2.75" PointY="1.125" />
+        <EntityTypeShape EntityType="ModelRedSocial.Foto" Width="1.5" PointX="5" PointY="0.5" />
+        <AssociationConnector Association="ModelRedSocial.FotoFotoPublicacion" />
+        <AssociationConnector Association="ModelRedSocial.FotoFotoUsuario" />
+        <AssociationConnector Association="ModelRedSocial.UsuarioFotoUsuario" />
+        <AssociationConnector Association="ModelRedSocial.PublicacionFotoPublicacion" />
+        <AssociationConnector Association="ModelRedSocial.UsuarioPublicacion" />
+        <AssociationConnector Association="ModelRedSocial.PublicacionComentario" />
+        <AssociationConnector Association="ModelRedSocial.UsuarioComentario" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
