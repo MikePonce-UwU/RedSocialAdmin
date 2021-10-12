@@ -49,6 +49,34 @@
             <End Role="Usuario" EntitySet="Usuarios" />
             <End Role="Comentario" EntitySet="Comentarios" />
           </AssociationSet>
+          <EntitySet Name="Remitentes" EntityType="ModelRedSocial.Remitente" />
+          <EntitySet Name="Emisores" EntityType="ModelRedSocial.Emisor" />
+          <AssociationSet Name="UsuarioEmisor" Association="ModelRedSocial.UsuarioEmisor">
+            <End Role="Usuario" EntitySet="Usuarios" />
+            <End Role="Emisor" EntitySet="Emisores" />
+          </AssociationSet>
+          <AssociationSet Name="UsuarioRemitente" Association="ModelRedSocial.UsuarioRemitente">
+            <End Role="Usuario" EntitySet="Usuarios" />
+            <End Role="Remitente" EntitySet="Remitentes" />
+          </AssociationSet>
+          <AssociationSet Name="RemitenteMensaje" Association="ModelRedSocial.RemitenteMensaje">
+            <End Role="Remitente" EntitySet="Remitentes" />
+            <End Role="Mensaje" EntitySet="Mensajes" />
+          </AssociationSet>
+          <AssociationSet Name="EmisorMensaje" Association="ModelRedSocial.EmisorMensaje">
+            <End Role="Emisor" EntitySet="Emisores" />
+            <End Role="Mensaje" EntitySet="Mensajes" />
+          </AssociationSet>
+          <EntitySet Name="Departamentos" EntityType="ModelRedSocial.Departamento" />
+          <EntitySet Name="Municipios" EntityType="ModelRedSocial.Municipio" />
+          <AssociationSet Name="DepartamentoMunicipio" Association="ModelRedSocial.DepartamentoMunicipio">
+            <End Role="Departamento" EntitySet="Departamentos" />
+            <End Role="Municipio" EntitySet="Municipios" />
+          </AssociationSet>
+          <AssociationSet Name="MunicipioUsuario" Association="ModelRedSocial.MunicipioUsuario">
+            <End Role="Municipio" EntitySet="Municipios" />
+            <End Role="Usuario" EntitySet="Usuarios" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Usuario">
           <Key>
@@ -61,12 +89,16 @@
           <Property Name="Correo" Type="String" Nullable="false" />
           <Property Name="Telefono" Type="String" Nullable="false" />
           <Property Name="Foto" Type="Binary" Nullable="false" />
+          <Property Name="MunicipioId" Type="Int32" Nullable="false" />
           <Property Name="created_at" Type="DateTime" Nullable="false" />
           <Property Name="updated_at" Type="DateTime" Nullable="false" />
           <Property Name="status" Type="String" Nullable="false" />
           <NavigationProperty Name="FotoUsuario" Relationship="ModelRedSocial.UsuarioFotoUsuario" FromRole="Usuario" ToRole="FotoUsuario" />
           <NavigationProperty Name="Publicacion" Relationship="ModelRedSocial.UsuarioPublicacion" FromRole="Usuario" ToRole="Publicacion" />
           <NavigationProperty Name="Comentario" Relationship="ModelRedSocial.UsuarioComentario" FromRole="Usuario" ToRole="Comentario" />
+          <NavigationProperty Name="Emisor" Relationship="ModelRedSocial.UsuarioEmisor" FromRole="Usuario" ToRole="Emisor" />
+          <NavigationProperty Name="Remitente" Relationship="ModelRedSocial.UsuarioRemitente" FromRole="Usuario" ToRole="Remitente" />
+          <NavigationProperty Name="Municipio" Relationship="ModelRedSocial.MunicipioUsuario" FromRole="Usuario" ToRole="Municipio" />
         </EntityType>
         <EntityType Name="Publicacion">
           <Key>
@@ -74,10 +106,10 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Descripcion" Type="String" Nullable="false" />
-          <Property Name="FechaPublicacion" Type="DateTime" Nullable="false" />
-          <Property Name="Imagen" Type="Binary" Nullable="false" />
+          <Property Name="created_at" Type="DateTime" Nullable="false" />
           <NavigationProperty Name="FotoPublicacion" Relationship="ModelRedSocial.PublicacionFotoPublicacion" FromRole="Publicacion" ToRole="FotoPublicacion" />
           <NavigationProperty Name="Usuario" Relationship="ModelRedSocial.UsuarioPublicacion" FromRole="Publicacion" ToRole="Usuario" />
+          <Property Name="updated_at" Type="String" Nullable="false" />
           <Property Name="UsuarioId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Comentario" Relationship="ModelRedSocial.PublicacionComentario" FromRole="Publicacion" ToRole="Comentario" />
         </EntityType>
@@ -94,6 +126,10 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Texto" Type="String" Nullable="false" />
           <Property Name="Fecha" Type="DateTime" Nullable="false" />
+          <NavigationProperty Name="Remitente" Relationship="ModelRedSocial.RemitenteMensaje" FromRole="Mensaje" ToRole="Remitente" />
+          <Property Name="RemitenteId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Emisor" Relationship="ModelRedSocial.EmisorMensaje" FromRole="Mensaje" ToRole="Emisor" />
+          <Property Name="EmisorId" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Comentario">
           <Key>
@@ -136,9 +172,9 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="foto" Type="String" Nullable="false" />
-          <Property Name="created_at" Type="String" Nullable="false" />
-          <Property Name="updated_at" Type="String" Nullable="false" />
+          <Property Name="foto" Type="Binary" Nullable="false" />
+          <Property Name="created_at" Type="DateTime" Nullable="false" />
+          <Property Name="updated_at" Type="DateTime" Nullable="false" />
           <NavigationProperty Name="FotoPublicacion" Relationship="ModelRedSocial.FotoFotoPublicacion" FromRole="Foto" ToRole="FotoPublicacion" />
           <NavigationProperty Name="FotoUsuario" Relationship="ModelRedSocial.FotoFotoUsuario" FromRole="Foto" ToRole="FotoUsuario" />
         </EntityType>
@@ -223,6 +259,114 @@
             </Principal>
             <Dependent Role="Comentario">
               <PropertyRef Name="UsuarioId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Remitente">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Usuario" Relationship="ModelRedSocial.UsuarioRemitente" FromRole="Remitente" ToRole="Usuario" />
+          <Property Name="UsuarioId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Mensaje" Relationship="ModelRedSocial.RemitenteMensaje" FromRole="Remitente" ToRole="Mensaje" />
+        </EntityType>
+        <EntityType Name="Emisor">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Usuario" Relationship="ModelRedSocial.UsuarioEmisor" FromRole="Emisor" ToRole="Usuario" />
+          <Property Name="UsuarioId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Mensaje" Relationship="ModelRedSocial.EmisorMensaje" FromRole="Emisor" ToRole="Mensaje" />
+        </EntityType>
+        <Association Name="UsuarioEmisor">
+          <End Type="ModelRedSocial.Usuario" Role="Usuario" Multiplicity="1" />
+          <End Type="ModelRedSocial.Emisor" Role="Emisor" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuario">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Emisor">
+              <PropertyRef Name="UsuarioId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="UsuarioRemitente">
+          <End Type="ModelRedSocial.Usuario" Role="Usuario" Multiplicity="1" />
+          <End Type="ModelRedSocial.Remitente" Role="Remitente" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuario">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Remitente">
+              <PropertyRef Name="UsuarioId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="RemitenteMensaje">
+          <End Type="ModelRedSocial.Remitente" Role="Remitente" Multiplicity="1" />
+          <End Type="ModelRedSocial.Mensaje" Role="Mensaje" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Remitente">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Mensaje">
+              <PropertyRef Name="RemitenteId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EmisorMensaje">
+          <End Type="ModelRedSocial.Emisor" Role="Emisor" Multiplicity="1" />
+          <End Type="ModelRedSocial.Mensaje" Role="Mensaje" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Emisor">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Mensaje">
+              <PropertyRef Name="EmisorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Departamento">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="nombreDepartamento" Type="String" Nullable="false" />
+          <NavigationProperty Name="Municipio" Relationship="ModelRedSocial.DepartamentoMunicipio" FromRole="Departamento" ToRole="Municipio" />
+        </EntityType>
+        <EntityType Name="Municipio">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="nombreMunicipio" Type="String" Nullable="false" />
+          <NavigationProperty Name="Departamento" Relationship="ModelRedSocial.DepartamentoMunicipio" FromRole="Municipio" ToRole="Departamento" />
+          <Property Name="DepartamentoId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Usuario" Relationship="ModelRedSocial.MunicipioUsuario" FromRole="Municipio" ToRole="Usuario" />
+        </EntityType>
+        <Association Name="DepartamentoMunicipio">
+          <End Type="ModelRedSocial.Departamento" Role="Departamento" Multiplicity="1" />
+          <End Type="ModelRedSocial.Municipio" Role="Municipio" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Departamento">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Municipio">
+              <PropertyRef Name="DepartamentoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="MunicipioUsuario">
+          <End Type="ModelRedSocial.Municipio" Role="Municipio" Multiplicity="1" />
+          <End Type="ModelRedSocial.Usuario" Role="Usuario" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Municipio">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Usuario">
+              <PropertyRef Name="MunicipioId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
