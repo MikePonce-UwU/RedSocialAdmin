@@ -4,10 +4,10 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="a9679b7e25384231bdab43aee6919102" Name="Diagram1" ZoomLevel="74" >
+      <Diagram DiagramId="a9679b7e25384231bdab43aee6919102" Name="Diagram1" ZoomLevel="97" >
         <EntityTypeShape EntityType="ModelRedSocial.Usuario" Width="1.5" PointX="5.375" PointY="3.25" />
         <EntityTypeShape EntityType="ModelRedSocial.Publicacion" Width="1.5" PointX="9.625" PointY="3" />
-        <EntityTypeShape EntityType="ModelRedSocial.Amigo" Width="1.5" PointX="1.125" PointY="5.125" />
+        <EntityTypeShape EntityType="ModelRedSocial.Relacion" Width="1.5" PointX="1.125" PointY="6.25" />
         <EntityTypeShape EntityType="ModelRedSocial.Mensaje" Width="1.5" PointX="1.125" PointY="0.5" />
         <EntityTypeShape EntityType="ModelRedSocial.Comentario" Width="1.5" PointX="9.625" PointY="6" />
         <EntityTypeShape EntityType="ModelRedSocial.FotoPublicacion" Width="1.5" PointX="9.625" PointY="0.5" />
@@ -22,19 +22,20 @@
         <AssociationConnector Association="ModelRedSocial.UsuarioComentario" />
         <EntityTypeShape EntityType="ModelRedSocial.Remitente" Width="1.5" PointX="1.125" PointY="3.125" />
         <EntityTypeShape EntityType="ModelRedSocial.Emisor" Width="1.5" PointX="3.25" PointY="0.5" />
-        <AssociationConnector Association="ModelRedSocial.UsuarioEmisor" ManuallyRouted="true" >
-          <ConnectorPoint PointX="5.375" PointY="7.3997512295774692" />
-          <ConnectorPoint PointX="3.28125" PointY="7.3997512295774692" />
-          <ConnectorPoint PointX="3.28125" PointY="2.2879850260416665" />
+        <AssociationConnector Association="ModelRedSocial.UsuarioEmisor" ManuallyRouted="false" >
         </AssociationConnector>
         <AssociationConnector Association="ModelRedSocial.UsuarioRemitente" />
         <AssociationConnector Association="ModelRedSocial.RemitenteMensaje" />
         <AssociationConnector Association="ModelRedSocial.EmisorMensaje" />
-        <EntityTypeShape EntityType="ModelRedSocial.Departamento" Width="1.5" PointX="1.125" PointY="7.25" />
-        <EntityTypeShape EntityType="ModelRedSocial.Municipio" Width="1.5" PointX="3.25" PointY="7.25" />
+        <EntityTypeShape EntityType="ModelRedSocial.Departamento" Width="1.5" PointX="1.125" PointY="8.375" />
+        <EntityTypeShape EntityType="ModelRedSocial.Municipio" Width="1.5" PointX="5.375" PointY="8.375" />
         <AssociationConnector Association="ModelRedSocial.DepartamentoMunicipio" />
         <AssociationConnector Association="ModelRedSocial.MunicipioUsuario" />
-        <AssociationConnector Association="ModelRedSocial.UsuarioAmigo" />
+        <EntityTypeShape EntityType="ModelRedSocial.DetalleRelacion" Width="1.5" PointX="3.25" PointY="5.375" />
+        <EntityTypeShape EntityType="ModelRedSocial.RelacionTipo" Width="1.5" PointX="3.25" PointY="7.75" />
+        <AssociationConnector Association="ModelRedSocial.DetalleRelacionRelacionTipo" />
+        <AssociationConnector Association="ModelRedSocial.UsuarioRelacion" />
+        <AssociationConnector Association="ModelRedSocial.UsuarioDetalleRelacion" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

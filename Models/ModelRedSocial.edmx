@@ -15,7 +15,7 @@
         <EntityContainer Name="ModelRedSocialContainer" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Usuarios" EntityType="ModelRedSocial.Usuario" />
           <EntitySet Name="Publicaciones" EntityType="ModelRedSocial.Publicacion" />
-          <EntitySet Name="Amigos" EntityType="ModelRedSocial.Amigo" />
+          <EntitySet Name="Relaciones" EntityType="ModelRedSocial.Relacion" />
           <EntitySet Name="Mensajes" EntityType="ModelRedSocial.Mensaje" />
           <EntitySet Name="Comentarios" EntityType="ModelRedSocial.Comentario" />
           <EntitySet Name="FotoPublicaciones" EntityType="ModelRedSocial.FotoPublicacion" />
@@ -77,9 +77,19 @@
             <End Role="Municipio" EntitySet="Municipios" />
             <End Role="Usuario" EntitySet="Usuarios" />
           </AssociationSet>
-          <AssociationSet Name="UsuarioAmigo" Association="ModelRedSocial.UsuarioAmigo">
+          <EntitySet Name="DetalleRelaciones" EntityType="ModelRedSocial.DetalleRelacion" />
+          <EntitySet Name="RelacionTipos" EntityType="ModelRedSocial.RelacionTipo" />
+          <AssociationSet Name="DetalleRelacionRelacionTipo" Association="ModelRedSocial.DetalleRelacionRelacionTipo">
+            <End Role="DetalleRelacion" EntitySet="DetalleRelaciones" />
+            <End Role="RelacionTipo" EntitySet="RelacionTipos" />
+          </AssociationSet>
+          <AssociationSet Name="UsuarioRelacion" Association="ModelRedSocial.UsuarioRelacion">
             <End Role="Usuario" EntitySet="Usuarios" />
-            <End Role="Amigo" EntitySet="Amigos" />
+            <End Role="Relacion" EntitySet="Relaciones" />
+          </AssociationSet>
+          <AssociationSet Name="UsuarioDetalleRelacion" Association="ModelRedSocial.UsuarioDetalleRelacion">
+            <End Role="Usuario" EntitySet="Usuarios" />
+            <End Role="DetalleRelacion" EntitySet="DetalleRelaciones" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="Usuario">
@@ -103,7 +113,8 @@
           <NavigationProperty Name="Emisor" Relationship="ModelRedSocial.UsuarioEmisor" FromRole="Usuario" ToRole="Emisor" />
           <NavigationProperty Name="Remitente" Relationship="ModelRedSocial.UsuarioRemitente" FromRole="Usuario" ToRole="Remitente" />
           <NavigationProperty Name="Municipio" Relationship="ModelRedSocial.MunicipioUsuario" FromRole="Usuario" ToRole="Municipio" />
-          <NavigationProperty Name="Amigo" Relationship="ModelRedSocial.UsuarioAmigo" FromRole="Usuario" ToRole="Amigo" />
+          <NavigationProperty Name="Relacion" Relationship="ModelRedSocial.UsuarioRelacion" FromRole="Usuario" ToRole="Relacion" />
+          <NavigationProperty Name="DetalleRelacion" Relationship="ModelRedSocial.UsuarioDetalleRelacion" FromRole="Usuario" ToRole="DetalleRelacion" />
         </EntityType>
         <EntityType Name="Publicacion">
           <Key>
@@ -118,13 +129,12 @@
           <Property Name="UsuarioId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Comentario" Relationship="ModelRedSocial.PublicacionComentario" FromRole="Publicacion" ToRole="Comentario" />
         </EntityType>
-        <EntityType Name="Amigo">
+        <EntityType Name="Relacion">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="amigosArray" Type="String" Nullable="false" />
-          <NavigationProperty Name="Usuario" Relationship="ModelRedSocial.UsuarioAmigo" FromRole="Amigo" ToRole="Usuario" />
+          <NavigationProperty Name="Usuario" Relationship="ModelRedSocial.UsuarioRelacion" FromRole="Relacion" ToRole="Usuario" />
           <Property Name="UsuarioId" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Mensaje">
@@ -378,14 +388,47 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="UsuarioAmigo">
+        <EntityType Name="DetalleRelacion">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="RelacionTipo" Relationship="ModelRedSocial.DetalleRelacionRelacionTipo" FromRole="DetalleRelacion" ToRole="RelacionTipo" />
+          <NavigationProperty Name="Usuario" Relationship="ModelRedSocial.UsuarioDetalleRelacion" FromRole="DetalleRelacion" ToRole="Usuario" />
+          <Property Name="UsuarioId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="RelacionTipo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="tipo" Type="String" Nullable="false" />
+          <NavigationProperty Name="DetalleRelacion" Relationship="ModelRedSocial.DetalleRelacionRelacionTipo" FromRole="RelacionTipo" ToRole="DetalleRelacion" />
+        </EntityType>
+        <Association Name="DetalleRelacionRelacionTipo">
+          <End Type="ModelRedSocial.DetalleRelacion" Role="DetalleRelacion" Multiplicity="1" />
+          <End Type="ModelRedSocial.RelacionTipo" Role="RelacionTipo" Multiplicity="1" />
+        </Association>
+        <Association Name="UsuarioRelacion">
           <End Type="ModelRedSocial.Usuario" Role="Usuario" Multiplicity="1" />
-          <End Type="ModelRedSocial.Amigo" Role="Amigo" Multiplicity="*" />
+          <End Type="ModelRedSocial.Relacion" Role="Relacion" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Usuario">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="Amigo">
+            <Dependent Role="Relacion">
+              <PropertyRef Name="UsuarioId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="UsuarioDetalleRelacion">
+          <End Type="ModelRedSocial.Usuario" Role="Usuario" Multiplicity="1" />
+          <End Type="ModelRedSocial.DetalleRelacion" Role="DetalleRelacion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuario">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DetalleRelacion">
               <PropertyRef Name="UsuarioId" />
             </Dependent>
           </ReferentialConstraint>
