@@ -77,6 +77,10 @@
             <End Role="Municipio" EntitySet="Municipios" />
             <End Role="Usuario" EntitySet="Usuarios" />
           </AssociationSet>
+          <AssociationSet Name="UsuarioAmigo" Association="ModelRedSocial.UsuarioAmigo">
+            <End Role="Usuario" EntitySet="Usuarios" />
+            <End Role="Amigo" EntitySet="Amigos" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Usuario">
           <Key>
@@ -99,6 +103,7 @@
           <NavigationProperty Name="Emisor" Relationship="ModelRedSocial.UsuarioEmisor" FromRole="Usuario" ToRole="Emisor" />
           <NavigationProperty Name="Remitente" Relationship="ModelRedSocial.UsuarioRemitente" FromRole="Usuario" ToRole="Remitente" />
           <NavigationProperty Name="Municipio" Relationship="ModelRedSocial.MunicipioUsuario" FromRole="Usuario" ToRole="Municipio" />
+          <NavigationProperty Name="Amigo" Relationship="ModelRedSocial.UsuarioAmigo" FromRole="Usuario" ToRole="Amigo" />
         </EntityType>
         <EntityType Name="Publicacion">
           <Key>
@@ -118,6 +123,9 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="amigosArray" Type="String" Nullable="false" />
+          <NavigationProperty Name="Usuario" Relationship="ModelRedSocial.UsuarioAmigo" FromRole="Amigo" ToRole="Usuario" />
+          <Property Name="UsuarioId" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Mensaje">
           <Key>
@@ -367,6 +375,18 @@
             </Principal>
             <Dependent Role="Usuario">
               <PropertyRef Name="MunicipioId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="UsuarioAmigo">
+          <End Type="ModelRedSocial.Usuario" Role="Usuario" Multiplicity="1" />
+          <End Type="ModelRedSocial.Amigo" Role="Amigo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuario">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Amigo">
+              <PropertyRef Name="UsuarioId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
